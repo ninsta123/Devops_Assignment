@@ -48,7 +48,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-		<finalName>jenkinscicd-docker-image</finalName>
+		<finalName>jenkins-image</finalName>
 	</build>
 
 </project>

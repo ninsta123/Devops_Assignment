@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+    tools{
+        maven 'Maven'
+    }
+    
+    environment{
+        DOCKERHUB_CREDENTIALS = credentials('dockerhubtok')
+    }
+    
+    stages{
+        stage('Build Maven'){
+            steps{
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/adarshmishrasharda/jenkins1']]])
+                bat 'mvn clean install'
+            }
+        }
+        stage('Build docker image'){
+            steps{
+                script{
+                    bat 'docker build -t mishraadarsh/jenkinscicd-docker-image .'
+                }
+            }
+        }
+        
+        stage('docker login'){
+            
+            steps{
+                script{
+                    bat 'docker login -u mishraadarsh -p Adarsh@145'
+                    
+                }
+            }
+            
+        }
+        stage('Dockerhub push'){
+            
+            steps{
+                script{
+                    bat 'docker push mishraadarsh/jenkinscicd-docker-image'
+                    
+                }
+            }
+            
+        }
+        
+        stage('Deploy to k8s'){
+            steps{
+                script{
+                    kubeconfig(credentialsId: 'kubefile2', serverUrl: '') {
+                    bat 'kubectl apply -f deployment.yaml'
+                    
+                    bat 'kubectl get deployments'
+                    
+                    bat'kubectl get pods'
+                    
+                    bat 'kubectl apply -f service.yaml'
+                    
+                    bat 'kubectl get service'
+                    
+}
+                    
+                }
+                
+            }
+            
+        }
+        
+    
+        
+    }
+}

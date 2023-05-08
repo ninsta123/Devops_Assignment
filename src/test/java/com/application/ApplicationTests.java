@@ -1,4 +1,4 @@
-package com.ApplicationSystem;
+package com.application;
 
 import static org.junit.Assert.assertEquals;
 
